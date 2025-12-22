@@ -98,7 +98,7 @@ void main() {
           final thumbnailBytes =
               await VideoThumbnailService.extractThumbnailBytes(
                 videoPath: videoFile.path,
-                timestamp: Duration(milliseconds: 500),
+                timestamp: const Duration(milliseconds: 500),
                 quality: 80,
               );
 

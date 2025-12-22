@@ -99,7 +99,7 @@ void main() {
         // Test with custom timestamp
         final result = await VideoThumbnailService.extractThumbnail(
           videoPath: testVideoPath,
-          timestamp: Duration(seconds: 2),
+          timestamp: const Duration(seconds: 2),
         );
 
         expect(result, isNull); // Expected because it's not a real video
@@ -164,7 +164,7 @@ void main() {
 
         final results = await VideoThumbnailService.extractMultipleThumbnails(
           videoPath: testVideoPath,
-          timestamps: [
+          timestamps: const [
             Duration(milliseconds: 100),
             Duration(milliseconds: 200),
             Duration(milliseconds: 300),

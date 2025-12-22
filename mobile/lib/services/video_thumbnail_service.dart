@@ -11,6 +11,7 @@ import 'package:pro_video_editor/pro_video_editor.dart';
 
 /// Service for extracting thumbnail images from video files
 class VideoThumbnailService {
+  static const int _thumbnailQuality = 75;
   static const Size _thumbnailSize = Size.square(640);
 
   static final _proVideoEditor = ProVideoEditor.instance;
@@ -18,14 +19,15 @@ class VideoThumbnailService {
   /// Extract a thumbnail from a video file at a specific timestamp
   ///
   /// [videoPath] - Path to the video file
-  /// [timeMs] - Timestamp in milliseconds to extract thumbnail from (default: 100ms)
+  /// [timestamp] - Timestamp to extract thumbnail from (default: 500ms)
+  /// [quality] - JPEG quality (1-100, default: 75)
   ///
   /// Returns the path to the generated thumbnail file
   static Future<String?> extractThumbnail({
     required String videoPath,
     // Extract frame at 500ms by default
     Duration timestamp = const Duration(milliseconds: 500),
-    int quality = 80,
+    int quality = _thumbnailQuality,
   }) async {
     try {
       Log.debug(
@@ -121,7 +123,7 @@ class VideoThumbnailService {
   static Future<Uint8List?> extractThumbnailBytes({
     required String videoPath,
     Duration timestamp = const Duration(milliseconds: 500),
-    int quality = 80,
+    int quality = _thumbnailQuality,
   }) async {
     try {
       Log.debug(
@@ -185,7 +187,7 @@ class VideoThumbnailService {
   }) async {
     final timesToExtract =
         timestamps ??
-        [
+        const [
           Duration(milliseconds: 500),
           Duration(milliseconds: 1000),
           Duration(milliseconds: 1500),
