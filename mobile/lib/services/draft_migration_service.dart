@@ -69,7 +69,6 @@ class DraftMigrationService {
       try {
         thumbnailPath = await VideoThumbnailService.extractThumbnail(
           videoPath: draft.videoFile.path,
-          timeMs: 100,
         );
       } catch (e) {
         Log.warning(

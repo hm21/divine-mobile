@@ -2141,7 +2141,6 @@ Upload Timeout Failure:
       // Generate thumbnail at optimal timestamp
       final thumbnailPath = await VideoThumbnailService.extractThumbnail(
         videoPath: videoFile.path,
-        timeMs: 500, // Extract at 500ms
         quality: 85,
       );
 

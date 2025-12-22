@@ -6,13 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_new/return_code.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:models/models.dart' show AspectRatio;
 import 'package:openvine/models/recording_clip.dart';
 import 'package:openvine/models/text_overlay.dart';
 import 'package:openvine/services/text_overlay_renderer.dart';
 import 'package:openvine/utils/ffmpeg_encoder.dart';
 import 'package:openvine/utils/unified_logger.dart';
+
+import 'video_thumbnail_service.dart';
 
 /// Export stages for progress reporting
 enum ExportStage {
@@ -496,9 +497,10 @@ class VideoExportService {
   }
 
   /// Generates a thumbnail from a video file
-  ///
-  /// Extracts a frame from the middle of the video
-  Future<String?> generateThumbnail(String videoPath) async {
+  Future<String?> generateThumbnail(
+    String videoPath, {
+    Duration timestamp = const Duration(milliseconds: 500),
+  }) async {
     try {
       Log.info(
         'Generating thumbnail from video: $videoPath',
@@ -506,12 +508,9 @@ class VideoExportService {
         category: LogCategory.system,
       );
 
-      final thumbnailPath = await VideoThumbnail.thumbnailFile(
-        video: videoPath,
-        thumbnailPath: (await getTemporaryDirectory()).path,
-        imageFormat: ImageFormat.JPEG,
-        maxWidth: 640,
-        quality: 85,
+      final thumbnailPath = await VideoThumbnailService.extractThumbnail(
+        videoPath: videoPath,
+        timestamp: timestamp,
       );
 
       if (thumbnailPath != null) {

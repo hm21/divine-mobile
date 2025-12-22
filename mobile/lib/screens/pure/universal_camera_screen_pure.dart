@@ -1558,7 +1558,9 @@ class _UniversalCameraScreenPureState
 
         final thumbnailPath = await VideoThumbnailService.extractThumbnail(
           videoPath: segment.file.path,
-          timeMs: VideoThumbnailService.getOptimalTimestamp(segment.duration),
+          timestamp: VideoThumbnailService.getOptimalTimestamp(
+            segment.duration,
+          ),
         );
 
         clipManager.addClip(

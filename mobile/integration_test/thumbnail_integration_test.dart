@@ -98,7 +98,7 @@ void main() {
           final thumbnailBytes =
               await VideoThumbnailService.extractThumbnailBytes(
                 videoPath: videoFile.path,
-                timeMs: 500,
+                timestamp: Duration(milliseconds: 500),
                 quality: 80,
               );
 
@@ -172,10 +172,10 @@ void main() {
           // Test optimal timestamp calculation
           final timestamp1 = VideoThumbnailService.getOptimalTimestamp(
             const Duration(seconds: 6, milliseconds: 300),
-          );
+          ).inMilliseconds;
           final timestamp2 = VideoThumbnailService.getOptimalTimestamp(
             const Duration(seconds: 30),
-          );
+          ).inMilliseconds;
 
           Log.debug('✅ Optimal timestamp for vine (6.3s): ${timestamp1}ms');
           Log.debug(
