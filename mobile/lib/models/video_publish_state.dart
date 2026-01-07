@@ -1,25 +1,24 @@
 // ABOUTME: Immutable state model for video publish screen
 // ABOUTME: Tracks playback state and video metadata
 
-import 'package:pro_video_editor/pro_video_editor.dart';
+import 'package:openvine/models/recording_clip.dart';
+import 'package:openvine/models/video_publish/video_publish_state.dart';
 
 /// Immutable state for video publish screen.
-class VideoPublishState {
+class VideoPublishProviderState {
   /// Creates a video publish state.
-  const VideoPublishState({
-    this.video,
-    this.videoMetadata,
+  const VideoPublishProviderState({
+    this.clip,
     this.isPlaying = true,
     this.isMuted = false,
     this.currentPosition = Duration.zero,
     this.totalDuration = Duration.zero,
+    this.publishState = .idle,
+    this.uploadProgress = 0,
   });
 
   /// The edited video to publish.
-  final EditorVideo? video;
-
-  /// Video metadata including resolution and format.
-  final VideoMetadata? videoMetadata;
+  final RecordingClip? clip;
 
   /// Whether video is currently playing.
   final bool isPlaying;
@@ -33,22 +32,29 @@ class VideoPublishState {
   /// Total video duration.
   final Duration totalDuration;
 
+  /// Current publish state.
+  final VideoPublishState publishState;
+
+  final double uploadProgress;
+
   /// Creates a copy with updated fields.
-  VideoPublishState copyWith({
-    EditorVideo? video,
-    VideoMetadata? videoMetadata,
+  VideoPublishProviderState copyWith({
+    RecordingClip? clip,
     bool? isPlaying,
     bool? isMuted,
     Duration? currentPosition,
     Duration? totalDuration,
+    VideoPublishState? publishState,
+    double? uploadProgress,
   }) {
-    return VideoPublishState(
-      video: video ?? this.video,
-      videoMetadata: videoMetadata ?? this.videoMetadata,
+    return VideoPublishProviderState(
+      clip: clip ?? this.clip,
       isPlaying: isPlaying ?? this.isPlaying,
       isMuted: isMuted ?? this.isMuted,
       currentPosition: currentPosition ?? this.currentPosition,
       totalDuration: totalDuration ?? this.totalDuration,
+      publishState: publishState ?? this.publishState,
+      uploadProgress: uploadProgress ?? this.uploadProgress,
     );
   }
 }

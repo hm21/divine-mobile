@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:openvine/providers/video_publish_provider.dart';
 import 'package:openvine/theme/vine_theme.dart';
 import 'package:openvine/widgets/divine_icon_button.dart';
 
@@ -31,9 +32,8 @@ class VideoPublishTopBar extends ConsumerWidget {
             DivineIconButton(
               iconPath: 'assets/icon/send.svg',
               backgroundColor: VineTheme.tabIndicatorGreen,
-              onTap: () {
-                // TODO(@hm21): Implement publish
-              },
+              onTap: () =>
+                  ref.read(videoPublishProvider.notifier).publishVideo(context),
               semanticLabel: 'Publish the video',
             ),
           ],

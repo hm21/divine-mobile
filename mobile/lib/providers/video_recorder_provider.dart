@@ -77,6 +77,8 @@ class VideoRecorderNotifier extends Notifier<VideoRecorderUIState> {
   Future<bool> initialize({BuildContext? context}) async {
     _isDestroyed = false;
 
+    // TODO(@hm21): cleanup all provider sessions
+
     // Check permissions using the dedicated service
     final hasPermissions = context != null && context.mounted
         ? await CameraPermissionService.ensurePermissionsWithDialog(context)
@@ -487,6 +489,10 @@ class VideoRecorderNotifier extends Notifier<VideoRecorderUIState> {
       .ten => .off,
     };
     state = state.copyWith(timerDuration: newTimer);
+  }
+
+  void reset() {
+    state = VideoRecorderUIState();
   }
 
   /// TODO(@hm21): DELETE Deprecated code Below ----------------------

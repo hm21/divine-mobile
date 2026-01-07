@@ -14,7 +14,9 @@ import 'package:openvine/widgets/video_editor/video_editor_top_bar.dart';
 /// Video editor screen for editing recorded video clips.
 class VideoEditorScreen extends ConsumerStatefulWidget {
   /// Creates a video editor screen.
-  const VideoEditorScreen({super.key});
+  const VideoEditorScreen({super.key, this.draftId});
+
+  final String? draftId;
 
   @override
   ConsumerState<VideoEditorScreen> createState() => _VideoEditorScreenState();
@@ -25,7 +27,9 @@ class _VideoEditorScreenState extends ConsumerState<VideoEditorScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(videoEditorProvider.notifier).reset();
+      ref
+          .read(videoEditorProvider.notifier)
+          .initialize(draftId: widget.draftId);
     });
   }
 

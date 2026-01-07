@@ -22,6 +22,8 @@ class VineDraft {
     required this.lastModified,
     required this.publishStatus,
     this.publishError,
+    this.allowAudioReuse = false,
+    this.expireTime,
     required this.publishAttempts,
     this.proofManifestJson,
   });
@@ -32,6 +34,8 @@ class VineDraft {
     required String description,
     required List<String> hashtags,
     required String selectedApproach,
+    bool allowAudioReuse = false,
+    Duration? expireTime,
     String? id,
     String? proofManifestJson,
   }) {
@@ -45,6 +49,8 @@ class VineDraft {
       selectedApproach: selectedApproach,
       createdAt: now,
       lastModified: now,
+      allowAudioReuse: allowAudioReuse,
+      expireTime: expireTime,
       publishStatus: PublishStatus.draft,
       publishError: null,
       publishAttempts: 0,
@@ -88,9 +94,13 @@ class VineDraft {
       selectedApproach: json['selectedApproach'] as String,
       createdAt: DateTime.parse(json['createdAt'] as String),
       lastModified: DateTime.parse(json['lastModified'] as String),
+      expireTime: json['expireTime'] != null
+          ? Duration(milliseconds: json['expireTime'] as int)
+          : null,
       publishStatus: json['publishStatus'] != null
           ? PublishStatus.values.byName(json['publishStatus'] as String)
           : PublishStatus.draft, // Migration: default for old drafts
+      allowAudioReuse: json['allowAudioReuse'] ?? false,
       publishError: json['publishError'] as String?,
       publishAttempts: json['publishAttempts'] as int? ?? 0,
       proofManifestJson: json['proofManifestJson'] as String?,
@@ -105,10 +115,12 @@ class VineDraft {
   final String selectedApproach;
   final DateTime createdAt;
   final DateTime lastModified;
+  final Duration? expireTime;
   final PublishStatus publishStatus;
   final String? publishError;
   final int publishAttempts;
   final String? proofManifestJson;
+  final bool allowAudioReuse;
 
   /// Check if this draft has ProofMode data
   bool get hasProofMode => proofManifestJson != null;
@@ -141,6 +153,8 @@ class VineDraft {
     List<String>? hashtags,
     PublishStatus? publishStatus,
     Object? publishError = _sentinel,
+    Duration? expireTime,
+    bool? allowAudioReuse,
     int? publishAttempts,
     Object? proofManifestJson = _sentinel,
   }) => VineDraft(
@@ -152,6 +166,8 @@ class VineDraft {
     selectedApproach: selectedApproach,
     createdAt: createdAt,
     lastModified: DateTime.now(),
+    expireTime: expireTime ?? this.expireTime,
+    allowAudioReuse: allowAudioReuse ?? this.allowAudioReuse,
     publishStatus: publishStatus ?? this.publishStatus,
     publishError: publishError == _sentinel
         ? this.publishError
@@ -173,6 +189,8 @@ class VineDraft {
     'selectedApproach': selectedApproach,
     'createdAt': createdAt.toIso8601String(),
     'lastModified': lastModified.toIso8601String(),
+    if (expireTime != null) 'expireTime': expireTime!.inMilliseconds,
+    'allowAudioReuse': allowAudioReuse,
     'publishStatus': publishStatus.name,
     'publishError': publishError,
     'publishAttempts': publishAttempts,

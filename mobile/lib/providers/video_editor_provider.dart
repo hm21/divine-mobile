@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:openvine/models/video_editor/video_editor_meta.dart';
 import 'package:openvine/models/video_editor_state.dart';
 import 'package:openvine/providers/clip_manager_provider.dart';
 import 'package:openvine/providers/video_publish_provider.dart';
@@ -19,9 +20,17 @@ final videoEditorProvider = NotifierProvider<VideoEditorNotifier, EditorState>(
 );
 
 class VideoEditorNotifier extends Notifier<EditorState> {
+  VideoEditorMeta? metadata;
+
   @override
   EditorState build() {
     return const EditorState();
+  }
+
+  void initialize({String? draftId}) {
+    reset();
+
+    // TODO(@hm21): load draft from id
   }
 
   void selectClip(int index) {
@@ -90,6 +99,10 @@ class VideoEditorNotifier extends Notifier<EditorState> {
     state = state.copyWith(currentPosition: offset + position);
   }
 
+  void setMetadata(VideoEditorMeta value) {
+    metadata = value;
+  }
+
   void close() {
     // Reset state or perform cleanup if needed
   }
@@ -107,9 +120,7 @@ class VideoEditorNotifier extends Notifier<EditorState> {
       showDragHandle: true,
       isScrollControlled: true,
       useSafeArea: true,
-      builder: (context) => const VideoEditorMetaSheet(
-        // draftId: '',
-      ),
+      builder: (context) => const VideoEditorMetaSheet(),
     );
 
     final outputPath = await completer.future;
@@ -126,9 +137,16 @@ class VideoEditorNotifier extends Notifier<EditorState> {
 
     if (!validToPublish || !context.mounted) return;
 
+    final clipManager = ref.read(clipManagerProvider.notifier);
+    final clips = clipManager.clips;
+
     ref.read(videoPublishProvider.notifier)
       ..reset()
-      ..setVideoData(video: EditorVideo.file(outputPath), metadata: metaData!);
+      ..setVideoData(
+        video: EditorVideo.file(outputPath),
+        metadata: metaData!,
+        aspectRatio: clips.first.aspectRatio,
+      );
 
     await context.pushVideoPublish();
   }

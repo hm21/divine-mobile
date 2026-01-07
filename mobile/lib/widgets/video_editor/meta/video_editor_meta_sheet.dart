@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:openvine/models/vine_draft.dart';
 import 'package:openvine/providers/app_providers.dart';
 import 'package:openvine/providers/clip_manager_provider.dart';
@@ -71,27 +72,19 @@ class _VideoEditorMetaSheetState extends ConsumerState<VideoEditorMetaSheet> {
 
       final prefs = await SharedPreferences.getInstance();
       final draftService = DraftStorageService(prefs);
-      final drafts = await draftService.getAllDrafts();
-
-      final draft = drafts.firstWhere(
-        (d) => d.id == widget.draftId,
-        orElse: () {
-          Log.error(
-            '📝 Draft not found: ${widget.draftId}',
-            category: LogCategory.video,
+      final draft = await draftService.getDraftById(widget.draftId!);
+      if (draft == null) {
+        if (context.mounted) {
+          context.pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Draft not found'),
+              backgroundColor: Colors.red,
+            ),
           );
-          if (mounted) {
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Draft not found'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-          throw StateError('Draft ${widget.draftId} not found');
-        },
-      );
+        }
+        throw StateError('Draft ${widget.draftId} not found');
+      }
 
       // Load the global audio sharing preference as default
       final audioSharingService = ref.read(

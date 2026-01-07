@@ -57,8 +57,8 @@ class _VideoPublishVideoState extends ConsumerState<VideoPublishVideoPreview> {
   }
 
   Future<void> _initializeVideoPlayer() async {
-    final editedVideo = ref.read(videoPublishProvider).video;
-    final videoPath = editedVideo?.file?.path;
+    final editedVideo = ref.read(videoPublishProvider).clip?.video;
+    final videoPath = await editedVideo?.safeFilePath();
 
     if (videoPath == null) {
       debugPrint('⚠️ No edited video path available');
@@ -105,8 +105,8 @@ class _VideoPublishVideoState extends ConsumerState<VideoPublishVideoPreview> {
 
   @override
   Widget build(BuildContext context) {
-    final metadata = ref.watch(
-      videoPublishProvider.select((s) => s.videoMetadata),
+    final aspectRatio = ref.watch(
+      videoPublishProvider.select((s) => s.clip?.aspectRatio),
     );
 
     return SafeArea(
@@ -114,7 +114,7 @@ class _VideoPublishVideoState extends ConsumerState<VideoPublishVideoPreview> {
         clipBehavior: .hardEdge,
         borderRadius: .circular(16),
         child: AspectRatio(
-          aspectRatio: metadata!.resolution.aspectRatio,
+          aspectRatio: aspectRatio?.value ?? 1,
           child: AnimatedSwitcher(
             duration: const Duration(milliseconds: 220),
             child: _isInitialized && _controller != null

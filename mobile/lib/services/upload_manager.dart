@@ -308,6 +308,13 @@ class UploadManager {
       );
     }
 
+    if (videoDuration == null) {
+      final meta = await ProVideoEditor.instance.getMetadata(
+        EditorVideo.file(videoFilePath),
+      );
+      videoDuration = meta.duration;
+    }
+
     return _startUploadInternal(
       videoFile: File(videoFilePath),
       nostrPubkey: nostrPubkey,

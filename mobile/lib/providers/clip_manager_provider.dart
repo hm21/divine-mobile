@@ -11,6 +11,8 @@ import 'package:openvine/models/recording_clip.dart';
 import 'package:openvine/models/saved_clip.dart';
 import 'package:openvine/models/vine_draft.dart';
 import 'package:openvine/providers/app_providers.dart';
+import 'package:openvine/providers/video_editor_provider.dart';
+import 'package:openvine/providers/video_publish_provider.dart';
 import 'package:openvine/screens/clip_library_screen.dart';
 import 'package:openvine/services/draft_storage_service.dart';
 import 'package:openvine/theme/vine_theme.dart';
@@ -351,6 +353,8 @@ class ClipManagerNotifier extends Notifier<ClipManagerState> {
       final prefs = await SharedPreferences.getInstance();
       final draftService = DraftStorageService(prefs);
       await draftService.saveDraft(draft);
+
+      ref.read(videoPublishProvider.notifier).setDraftId(draft.id);
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
