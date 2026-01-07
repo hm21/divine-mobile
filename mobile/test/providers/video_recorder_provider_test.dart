@@ -3,8 +3,10 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:models/models.dart' show AspectRatio;
-import 'package:openvine/models/video_recorder_state.dart';
-import 'package:openvine/providers/video_recorder_provider.dart';
+import 'package:openvine/models/video_recorder/video_recorder_flash_mode.dart';
+import 'package:openvine/models/video_recorder/video_recorder_provider_state.dart';
+import 'package:openvine/models/video_recorder/video_recorder_state.dart';
+import 'package:openvine/models/video_recorder/video_recorder_timer_duration.dart';
 
 void main() {
   group('VideoRecorderUIState AspectRatio', () {

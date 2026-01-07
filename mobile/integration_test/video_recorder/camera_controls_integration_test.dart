@@ -9,7 +9,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:openvine/providers/video_recorder_provider.dart';
+import 'package:openvine/models/video_recorder/video_recorder_flash_mode.dart';
 import 'package:openvine/services/video_recorder/camera/camera_base_service.dart';
 import 'package:openvine/services/video_recorder/camera/camera_permission_service.dart';
 import 'package:openvine/utils/unified_logger.dart';

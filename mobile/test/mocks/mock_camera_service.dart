@@ -2,7 +2,7 @@
 // ABOUTME: Provides a fake camera service that doesn't require actual hardware
 
 import 'package:flutter/material.dart';
-import 'package:openvine/providers/video_recorder_provider.dart';
+import 'package:openvine/models/video_recorder/video_recorder_flash_mode.dart';
 import 'package:openvine/services/video_recorder/camera/camera_base_service.dart';
 import 'package:pro_video_editor/pro_video_editor.dart';
 

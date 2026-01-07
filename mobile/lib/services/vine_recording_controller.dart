@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 // camera_macos removed - using NativeMacOSCamera for both preview and recording
 
 import 'package:models/models.dart' as model show AspectRatio;
-import 'package:openvine/providers/video_recorder_provider.dart';
+import 'package:openvine/models/video_recorder/video_recorder_flash_mode.dart';
 import 'package:openvine/utils/async_utils.dart';
 
 // TODO(@hm21): Delete all of it

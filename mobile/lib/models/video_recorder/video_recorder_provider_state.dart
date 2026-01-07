@@ -1,6 +1,8 @@
 import 'dart:ui';
 
-import 'package:openvine/providers/video_recorder_provider.dart';
+import 'package:openvine/models/video_recorder/video_recorder_flash_mode.dart';
+import 'package:openvine/models/video_recorder/video_recorder_state.dart';
+import 'package:openvine/models/video_recorder/video_recorder_timer_duration.dart';
 import 'package:models/models.dart' as model show AspectRatio;
 
 /// State class capturing all UI state for video recording.

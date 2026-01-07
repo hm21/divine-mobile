@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:models/models.dart' as model show AspectRatio;
-import 'package:openvine/models/video_recorder_state.dart';
+import 'package:openvine/models/video_recorder/video_recorder_flash_mode.dart';
+import 'package:openvine/models/video_recorder/video_recorder_provider_state.dart';
+import 'package:openvine/models/video_recorder/video_recorder_timer_duration.dart';
 import 'package:openvine/providers/clip_manager_provider.dart';
 import 'package:openvine/router/nav_extensions.dart';
 import 'package:openvine/services/video_recorder/camera/camera_base_service.dart';
@@ -15,77 +17,6 @@ import 'package:openvine/services/video_recorder/camera/camera_permission_servic
 import 'package:openvine/services/video_thumbnail_service.dart';
 import 'package:openvine/utils/unified_logger.dart';
 import 'package:pro_video_editor/pro_video_editor.dart';
-
-/// Timer duration options for delayed recording.
-enum TimerDuration {
-  /// No timer delay.
-  off,
-
-  /// 3 second delay.
-  three,
-
-  /// 10 second delay.
-  ten;
-
-  /// Icon representing the timer duration.
-  IconData get icon => switch (this) {
-    .off => Icons.timer,
-    .three => Icons.timer_3,
-    .ten => Icons.timer_10,
-  };
-
-  /// Path to SVG asset representing the timer duration.
-  String get iconPath => switch (this) {
-    .off => 'assets/icon/timer.svg',
-    .three => 'assets/icon/timer_3.svg',
-    .ten => 'assets/icon/timer_10.svg',
-  };
-
-  /// Duration value for the timer.
-  Duration get duration => switch (this) {
-    .off => Duration.zero,
-    .three => const Duration(seconds: 3),
-    .ten => const Duration(seconds: 10),
-  };
-}
-
-/// Camera flash mode options.
-enum DivineFlashMode {
-  /// Auto flash mode.
-  auto,
-
-  /// Torch (always on) mode.
-  torch,
-
-  /// Flash off mode.
-  off;
-
-  /// Icon representing the flash mode.
-  IconData get icon => switch (this) {
-    .off => Icons.flash_off,
-    .torch => Icons.flash_on,
-    .auto => Icons.flash_auto,
-  };
-
-  /// Path to SVG asset representing the flash mode.
-  String get iconPath => switch (this) {
-    .off => 'assets/icon/flash_off.svg',
-    .torch => 'assets/icon/flash_on.svg',
-    .auto => 'assets/icon/flash_auto.svg',
-  };
-}
-
-/// Recording state for Vine-style segmented recording
-enum VideoRecorderState {
-  /// Camera preview active, not recording
-  idle,
-
-  /// Currently recording a segment
-  recording,
-
-  /// Error state
-  error,
-}
 
 /// Notifier that wraps VideoRecorderNotifier and provides reactive updates
 class VideoRecorderNotifier extends Notifier<VideoRecorderUIState> {
