@@ -19,6 +19,7 @@ import 'package:openvine/services/upload_initialization_helper.dart';
 import 'package:openvine/services/video_thumbnail_service.dart';
 import 'package:openvine/utils/async_utils.dart';
 import 'package:openvine/utils/unified_logger.dart';
+import 'package:pro_video_editor/pro_video_editor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Get platform name for logging (web-safe)
@@ -289,8 +290,26 @@ class UploadManager {
       );
     }
 
+    // Use single clip (already processed) directly, or merge multiple clips
+    // with 6.3s max duration
+    String videoFilePath;
+    if (draft.clips.length == 1) {
+      videoFilePath = await draft.clips.first.video.safeFilePath();
+    } else {
+      videoFilePath = '';
+      await ProVideoEditor.instance.renderVideoToFile(
+        videoFilePath,
+        VideoRenderData(
+          videoSegments: draft.clips
+              .map((clip) => VideoSegment(video: clip.video))
+              .toList(),
+          endTime: Duration(milliseconds: 6_300),
+        ),
+      );
+    }
+
     return _startUploadInternal(
-      videoFile: draft.videoFile,
+      videoFile: File(videoFilePath),
       nostrPubkey: nostrPubkey,
       title: draft.title,
       description: draft.description,

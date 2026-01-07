@@ -1,29 +1,8 @@
 // ABOUTME: Pure video metadata screen using revolutionary Riverpod architecture
 // ABOUTME: Adds metadata to recorded videos before publishing without VideoManager dependencies
 
-import 'dart:async';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:models/models.dart' as vine show AspectRatio;
-import 'package:openvine/models/pending_upload.dart'
-    show UploadStatus, PendingUpload;
-import 'package:openvine/models/vine_draft.dart';
-import 'package:openvine/providers/app_providers.dart';
-import 'package:openvine/providers/clip_manager_provider.dart';
-import 'package:openvine/providers/sound_library_service_provider.dart';
-import 'package:openvine/providers/sounds_providers.dart';
-import 'package:openvine/router/nav_extensions.dart';
-import 'package:openvine/services/draft_storage_service.dart';
-import 'package:openvine/services/upload_manager.dart';
-import 'package:openvine/theme/vine_theme.dart';
-import 'package:openvine/utils/unified_logger.dart';
-import 'package:openvine/utils/video_duration_extractor.dart';
-import 'package:openvine/widgets/upload_progress_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:video_player/video_player.dart';
 
 /// TODO(@hm21): delete screen
 ///
@@ -75,6 +54,12 @@ class VideoMetadataScreenPure extends ConsumerStatefulWidget {
 
 class _VideoMetadataScreenPureState
     extends ConsumerState<VideoMetadataScreenPure> {
+  @override
+  Widget build(BuildContext context) {
+    throw UnimplementedError();
+  }
+
+  /* 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _hashtagController = TextEditingController();
@@ -102,7 +87,6 @@ class _VideoMetadataScreenPureState
     super.initState();
     _loadDraft();
   }
-
   Future<void> _loadDraft() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -1965,5 +1949,5 @@ Video: ${_currentDraft?.videoFile.path ?? 'Unknown'}
     }
 
     return pendingUpload;
-  }
+  } */
 }

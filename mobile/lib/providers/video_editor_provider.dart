@@ -75,18 +75,6 @@ class VideoEditorNotifier extends Notifier<EditorState> {
     state = state.copyWith(isMuted: !state.isMuted);
   }
 
-  void showMoreOptions(BuildContext context) async {
-    await showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: const Color(0xFF101111),
-      showDragHandle: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: .vertical(top: .circular(32)),
-      ),
-      builder: (context) => const VideoEditorMoreSheet(),
-    );
-  }
-
   void reset() {
     state = const EditorState();
   }
@@ -143,6 +131,18 @@ class VideoEditorNotifier extends Notifier<EditorState> {
       ..setVideoData(video: EditorVideo.file(outputPath), metadata: metaData!);
 
     await context.pushVideoPublish();
+  }
+
+  void showMoreOptions(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: const Color(0xFF101111),
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: .vertical(top: .circular(32)),
+      ),
+      builder: (context) => const VideoEditorMoreSheet(),
+    );
   }
 
   Future<void> _renderVideo(Completer<String?> completer) async {

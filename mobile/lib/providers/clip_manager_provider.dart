@@ -9,11 +9,14 @@ import 'package:models/models.dart' as model show AspectRatio;
 import 'package:openvine/models/clip_manager_state.dart';
 import 'package:openvine/models/recording_clip.dart';
 import 'package:openvine/models/saved_clip.dart';
+import 'package:openvine/models/vine_draft.dart';
 import 'package:openvine/providers/app_providers.dart';
 import 'package:openvine/screens/clip_library_screen.dart';
+import 'package:openvine/services/draft_storage_service.dart';
 import 'package:openvine/theme/vine_theme.dart';
 import 'package:openvine/utils/unified_logger.dart';
 import 'package:pro_video_editor/pro_video_editor.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final clipManagerProvider =
     NotifierProvider<ClipManagerNotifier, ClipManagerState>(
@@ -337,14 +340,41 @@ class ClipManagerNotifier extends Notifier<ClipManagerState> {
       category: .video,
     );
 
-    // TODO(@hm21): Implement save to drafts functionality
-    if (!context.mounted) return;
+    try {
+      final draft = VineDraft.create(
+        clips: clips,
+        title: '',
+        description: '',
+        hashtags: [],
+        selectedApproach: 'video',
+      );
+      final prefs = await SharedPreferences.getInstance();
+      final draftService = DraftStorageService(prefs);
+      await draftService.saveDraft(draft);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Saved to drafts'),
-        backgroundColor: VineTheme.vineGreen,
-      ),
-    );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Saved to drafts'),
+          backgroundColor: VineTheme.vineGreen,
+        ),
+      );
+    } catch (e, stackTrace) {
+      Log.error(
+        '❌ Failed to save to drafts: $e',
+        name: 'ClipManagerNotifier',
+        category: LogCategory.video,
+        error: e,
+        stackTrace: stackTrace,
+      );
+
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to save to drafts'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }
