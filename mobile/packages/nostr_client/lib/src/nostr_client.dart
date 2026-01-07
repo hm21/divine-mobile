@@ -222,6 +222,19 @@ class NostrClient {
       _cacheEvent(event);
     }
 
+    // Checks health of relays, attempts reconnection if none connected,
+    // and exits if reconnect is unsuccessful
+    if (_relayManager.connectedRelays.isEmpty) {
+      await retryDisconnectedRelays();
+      if (_relayManager.connectedRelays.isEmpty) {
+        // Rollback optimistic cache on failure
+        if (useOptimisticCache) {
+          _rollbackCachedEvent(event.id);
+        }
+        return null;
+      }
+    }
+
     final sentEvent = await _nostr.sendEvent(
       event,
       targetRelays: targetRelays,
