@@ -117,7 +117,7 @@ class _VideoEditorMetaSheetState extends ConsumerState<VideoEditorMetaSheet> {
         ..addAll(draft.hashtags);
 
       Log.info(
-        '📝 VideoMetadataScreenPure: Loaded draft ${draft.id}, '
+        '📝 VideoEditorMetaSheet: Loaded draft ${draft.id}, '
         'audio sharing default: $defaultAudioSharing',
         category: LogCategory.video,
       );

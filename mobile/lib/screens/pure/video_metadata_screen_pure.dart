@@ -25,6 +25,8 @@ import 'package:openvine/widgets/upload_progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:video_player/video_player.dart';
 
+/// TODO(@hm21): delete screen
+///
 /// Parameters for background video processing (text overlays, audio mixing)
 class VideoProcessingParams {
   const VideoProcessingParams({
