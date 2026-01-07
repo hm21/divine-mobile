@@ -18,19 +18,20 @@ import 'package:openvine/screens/clip_library_screen.dart';
 import 'package:openvine/screens/curated_list_feed_screen.dart';
 import 'package:openvine/screens/developer_options_screen.dart';
 import 'package:openvine/screens/explore_screen.dart';
+import 'package:openvine/screens/hashtag_screen_router.dart';
+import 'package:openvine/screens/home_screen_router.dart';
+import 'package:openvine/screens/liked_videos_screen_router.dart';
+import 'package:openvine/screens/notifications_screen.dart';
+import 'package:openvine/screens/profile_screen_router.dart';
+import 'package:openvine/screens/pure/search_screen_pure.dart';
 import 'package:openvine/screens/followers/my_followers_screen.dart';
 import 'package:openvine/screens/followers/others_followers_screen.dart';
 import 'package:openvine/screens/following/my_following_screen.dart';
 import 'package:openvine/screens/following/others_following_screen.dart';
-import 'package:openvine/screens/hashtag_screen_router.dart';
-import 'package:openvine/screens/home_screen_router.dart';
 import 'package:openvine/screens/key_import_screen.dart';
 import 'package:openvine/screens/key_management_screen.dart';
 import 'package:openvine/screens/notification_settings_screen.dart';
-import 'package:openvine/screens/notifications_screen.dart';
-import 'package:openvine/screens/profile_screen_router.dart';
 import 'package:openvine/screens/profile_setup_screen.dart';
-import 'package:openvine/screens/pure/search_screen_pure.dart';
 import 'package:openvine/screens/relay_diagnostic_screen.dart';
 import 'package:openvine/screens/relay_settings_screen.dart';
 import 'package:openvine/screens/safety_settings_screen.dart';
@@ -38,7 +39,8 @@ import 'package:openvine/screens/settings_screen.dart';
 import 'package:openvine/screens/sound_detail_screen.dart';
 import 'package:openvine/screens/video_detail_screen.dart';
 import 'package:openvine/screens/video_editor_screen.dart';
-import 'package:openvine/screens/video_publish_screen.dart';
+import 'package:openvine/screens/fullscreen_video_feed_screen.dart';
+import 'package:openvine/screens/other_profile_screen.dart';
 import 'package:openvine/screens/video_recorder_screen.dart';
 import 'package:openvine/screens/welcome_screen.dart';
 import 'package:openvine/services/auth_service.dart';
@@ -62,6 +64,12 @@ final _hashtagGridKey = GlobalKey<NavigatorState>(debugLabel: 'hashtag-grid');
 final _hashtagFeedKey = GlobalKey<NavigatorState>(debugLabel: 'hashtag-feed');
 final _profileGridKey = GlobalKey<NavigatorState>(debugLabel: 'profile-grid');
 final _profileFeedKey = GlobalKey<NavigatorState>(debugLabel: 'profile-feed');
+final _likedVideosGridKey = GlobalKey<NavigatorState>(
+  debugLabel: 'liked-videos-grid',
+);
+final _likedVideosFeedKey = GlobalKey<NavigatorState>(
+  debugLabel: 'liked-videos-feed',
+);
 
 /// Maps URL location to bottom nav tab index
 /// Returns -1 for non-tab routes (like search, settings, edit-profile) to hide bottom nav
@@ -78,7 +86,8 @@ int tabIndexFromLocation(String loc) {
     case 'notifications':
       return 2;
     case 'profile':
-      return 3;
+    case 'liked-videos':
+      return 3; // Liked videos keeps profile tab active
     case 'search':
     case 'settings':
     case 'relay-settings':
@@ -98,6 +107,8 @@ int tabIndexFromLocation(String loc) {
     case 'drafts':
     case 'followers':
     case 'following':
+    case 'video-feed':
+    case 'profile-view':
     case 'sound':
       return -1; // Non-tab routes - no bottom nav
     case 'list':
@@ -387,6 +398,37 @@ final goRouterProvider = Provider<GoRouter>((ref) {
                 onGenerateRoute: (r) => MaterialPageRoute(
                   builder: (_) => const ProfileScreenRouter(),
                   settings: const RouteSettings(name: 'ProfileScreen'),
+                ),
+              ),
+            ),
+          ),
+
+          // LIKED VIDEOS route - grid mode (no index)
+          GoRoute(
+            path: '/liked-videos',
+            name: 'liked-videos',
+            pageBuilder: (ctx, st) => NoTransitionPage(
+              key: st.pageKey,
+              child: Navigator(
+                key: _likedVideosGridKey,
+                onGenerateRoute: (r) => MaterialPageRoute(
+                  builder: (_) => const LikedVideosScreenRouter(),
+                  settings: const RouteSettings(name: 'LikedVideosScreen'),
+                ),
+              ),
+            ),
+          ),
+
+          // LIKED VIDEOS route - feed mode (with video index)
+          GoRoute(
+            path: '/liked-videos/:index',
+            pageBuilder: (ctx, st) => NoTransitionPage(
+              key: st.pageKey,
+              child: Navigator(
+                key: _likedVideosFeedKey,
+                onGenerateRoute: (r) => MaterialPageRoute(
+                  builder: (_) => const LikedVideosScreenRouter(),
+                  settings: const RouteSettings(name: 'LikedVideosScreen'),
                 ),
               ),
             ),
@@ -721,11 +763,39 @@ final goRouterProvider = Provider<GoRouter>((ref) {
           );
         },
       ),
-      // Video publish route
+      // Fullscreen video feed route (no bottom nav, used from profile/hashtag grids)
       GoRoute(
-        path: '/video-publish',
-        name: 'video-publish',
-        builder: (_, _) => const VideoPublishScreen(),
+        path: '/video-feed',
+        name: 'video-feed',
+        builder: (ctx, st) {
+          final args = st.extra as FullscreenVideoFeedArgs?;
+          if (args == null) {
+            return Scaffold(
+              appBar: AppBar(title: const Text('Error')),
+              body: const Center(child: Text('No videos to display')),
+            );
+          }
+          return FullscreenVideoFeedScreen(
+            source: args.source,
+            initialIndex: args.initialIndex,
+            contextTitle: args.contextTitle,
+          );
+        },
+      ),
+      // Other user's profile screen (no bottom nav, pushed from feeds/search)
+      GoRoute(
+        path: '/profile-view/:npub',
+        name: 'profile-view',
+        builder: (ctx, st) {
+          final npub = st.pathParameters['npub'];
+          if (npub == null || npub.isEmpty) {
+            return Scaffold(
+              appBar: AppBar(title: const Text('Error')),
+              body: const Center(child: Text('Invalid profile ID')),
+            );
+          }
+          return OtherProfileScreen(npub: npub);
+        },
       ),
     ],
   );

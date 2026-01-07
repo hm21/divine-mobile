@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openvine/models/video_event.dart';
 import 'package:openvine/providers/app_lifecycle_provider.dart';
 import 'package:openvine/providers/hashtag_feed_providers.dart';
+import 'package:openvine/providers/liked_videos_state_bridge.dart';
 import 'package:openvine/providers/overlay_visibility_provider.dart';
 import 'package:openvine/providers/profile_feed_providers.dart';
 import 'package:openvine/providers/route_feed_providers.dart';
@@ -80,6 +81,18 @@ final activeVideoIdProvider = Provider<String?>((ref) {
     case RouteType.search:
       videosAsync = ref.watch(videosForSearchRouteProvider);
       break;
+    case RouteType.likedVideos:
+      videosAsync = ref.watch(likedVideosFeedProvider);
+      break;
+    case RouteType.videoFeed:
+      // videoFeed route manages its own playback via passed videos
+      // Return null to let FullscreenVideoFeedScreen handle it internally
+      Log.debug(
+        '[ACTIVE] ❌ videoFeed route (self-managed)',
+        name: 'ActiveVideoProvider',
+        category: LogCategory.system,
+      );
+      return null;
     case RouteType.notifications:
     case RouteType.videoRecorder:
     case RouteType.videoEditor:
@@ -98,6 +111,7 @@ final activeVideoIdProvider = Provider<String?>((ref) {
     case RouteType.developerOptions:
     case RouteType.followers:
     case RouteType.following:
+    case RouteType.profileView:
     case RouteType.curatedList:
     case RouteType.sound:
       // Non-video routes - return null
