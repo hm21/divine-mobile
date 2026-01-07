@@ -23,13 +23,19 @@ class VideoEditorScreen extends ConsumerStatefulWidget {
 }
 
 class _VideoEditorScreenState extends ConsumerState<VideoEditorScreen> {
+  late bool _isLoadingDraft = widget.draftId != null;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ref
           .read(videoEditorProvider.notifier)
           .initialize(draftId: widget.draftId);
+      if (!mounted) return;
+
+      _isLoadingDraft = false;
+      setState(() {});
     });
   }
 
@@ -50,33 +56,35 @@ class _VideoEditorScreenState extends ConsumerState<VideoEditorScreen> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.black,
-          body: Stack(
-            children: [
-              const SafeArea(
-                child: Column(
+          body: _isLoadingDraft
+              ? Center(child: CircularProgressIndicator.adaptive())
+              : Stack(
                   children: [
-                    /// Top bar
-                    VideoEditorTopBar(),
+                    const SafeArea(
+                      child: Column(
+                        children: [
+                          /// Top bar
+                          VideoEditorTopBar(),
 
-                    /// Main content area with clips
-                    Expanded(child: VideoEditorClipGallery()),
+                          /// Main content area with clips
+                          Expanded(child: VideoEditorClipGallery()),
 
-                    /// Bottom bar
-                    VideoEditorBottomBar(),
+                          /// Bottom bar
+                          VideoEditorBottomBar(),
 
-                    /// Progress bar
-                    VideoProgressBar(),
+                          /// Progress bar
+                          VideoProgressBar(),
+                        ],
+                      ),
+                    ),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: isProcessing
+                          ? const VideoEditorProcessingOverlay()
+                          : const SizedBox.shrink(),
+                    ),
                   ],
                 ),
-              ),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 200),
-                child: isProcessing
-                    ? const VideoEditorProcessingOverlay()
-                    : const SizedBox.shrink(),
-              ),
-            ],
-          ),
         ),
       ),
     );

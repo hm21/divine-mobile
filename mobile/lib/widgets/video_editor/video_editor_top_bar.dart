@@ -42,10 +42,7 @@ class VideoEditorTopBar extends ConsumerWidget {
           else
             DivineIconButton(
               iconPath: 'assets/icon/video_camera.svg',
-              onTap: () {
-                notifier.close();
-                context.pop();
-              },
+              onTap: () => context.pop(),
               semanticLabel: 'Go back to camera',
             ),
 

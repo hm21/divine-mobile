@@ -704,8 +704,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       // Video editor route
       GoRoute(
-        path: '/video-editor/:draftId',
+        path: '/video-editor',
         name: 'video-editor',
+        builder: (_, _) => const VideoEditorScreen(),
+      ),
+      GoRoute(
+        path: '/video-editor/:draftId',
+        name: 'video-editor-draft',
         builder: (_, st) {
           // The draft ID is optional if the user wants to continue editing
           // the draft.

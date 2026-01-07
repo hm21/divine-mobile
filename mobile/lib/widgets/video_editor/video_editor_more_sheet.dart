@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:openvine/providers/clip_manager_provider.dart';
+import 'package:openvine/providers/sounds_providers.dart';
+import 'package:openvine/providers/video_editor_provider.dart';
+import 'package:openvine/providers/video_publish_provider.dart';
+import 'package:openvine/providers/video_recorder_provider.dart';
 import 'package:openvine/widgets/bottom_sheet_list_tile.dart';
 
 /// Bottom sheet for video editor more options.
@@ -22,7 +26,11 @@ class VideoEditorMoreSheet extends ConsumerStatefulWidget {
 class _VideoEditorMoreSheetState extends ConsumerState<VideoEditorMoreSheet> {
   /// Deletes all clips and starts over.
   Future<void> _deleteAndStartOver() async {
+    ref.read(videoRecorderProvider.notifier).reset();
+    ref.read(videoEditorProvider.notifier).reset();
+    ref.read(videoPublishProvider.notifier).reset();
     ref.read(clipManagerProvider.notifier).clearAll();
+    ref.read(selectedSoundProvider.notifier).clear();
 
     /// Navigate back to the video-recorder page.
     context.pop();

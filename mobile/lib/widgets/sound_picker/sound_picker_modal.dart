@@ -2,11 +2,11 @@
 // ABOUTME: Includes search bar, scrollable sound list, import from device, and None option
 
 import 'dart:io';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:openvine/models/vine_sound.dart';
@@ -44,9 +44,11 @@ class _SoundPickerModalState extends ConsumerState<SoundPickerModal> {
     _audioPlayer = AudioPlayer();
 
     // Listen for playback completion to reset UI
-    _audioPlayer?.onPlayerComplete.listen((_) {
-      if (mounted) {
-        setState(() => _playingSoundId = null);
+    _audioPlayer?.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        if (mounted) {
+          setState(() => _playingSoundId = null);
+        }
       }
     });
   }
@@ -152,11 +154,11 @@ class _SoundPickerModalState extends ConsumerState<SoundPickerModal> {
           name: 'SoundPickerModal',
         );
 
-        await _audioPlayer?.setSourceDeviceFile(filePath);
+        await _audioPlayer?.setFilePath(filePath);
         Log.info('🔊 Audio source set', name: 'SoundPickerModal');
 
         setState(() => _playingSoundId = soundId);
-        await _audioPlayer?.resume();
+        await _audioPlayer?.play();
 
         Log.info('🔊 Playing sound: ${sound.title}', name: 'SoundPickerModal');
       } catch (e, stackTrace) {
@@ -198,13 +200,11 @@ class _SoundPickerModalState extends ConsumerState<SoundPickerModal> {
       final sourcePath = file.path;
       final fileName = file.name;
 
-      // Get audio duration using audioplayers
+      // Get audio duration using just_audio
       final player = AudioPlayer();
       Duration? duration;
       try {
-        await player.setSourceDeviceFile(sourcePath);
-        // Wait for duration to be available
-        duration = await player.getDuration();
+        duration = await player.setFilePath(sourcePath);
       } finally {
         await player.dispose();
       }

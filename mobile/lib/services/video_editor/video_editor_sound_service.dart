@@ -1,5 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:openvine/utils/unified_logger.dart';
 import 'package:video_player/video_player.dart';
 
@@ -58,13 +58,13 @@ class VideoEditorSoundService {
   /// Actually play the sound file
   Future<void> playSound(String filePath, String soundTitle) async {
     try {
-      await _audioPlayer?.setSourceDeviceFile(filePath);
+      await _audioPlayer?.setUrl('file:$filePath');
 
       // Set looping to match video
-      await _audioPlayer?.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer?.setLoopMode(.all);
 
       // Play the audio
-      await _audioPlayer?.resume();
+      await resumeAudio();
 
       Log.info('Playing sound: $soundTitle', category: LogCategory.video);
     } catch (e) {
@@ -86,7 +86,7 @@ class VideoEditorSoundService {
 
   /// Resume the audio player
   Future<void> resumeAudio() async {
-    await _audioPlayer?.resume();
+    await _audioPlayer?.play();
   }
 
   /// Dispose of the audio player

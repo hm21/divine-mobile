@@ -11,8 +11,6 @@ import 'services/video_recorder/camera/camera_base_service_test.dart'
     as base_service_test;
 import 'services/video_recorder/camera_permission_service_test.dart'
     as permission_test;
-import 'services/video_recorder/video_recorder_proof_service_test.dart'
-    as proof_test;
 
 // Import widget tests
 import 'widgets/video_recorder/video_recorder_bottom_bar_test.dart'
@@ -108,10 +106,6 @@ void main() async {
 
     group('Camera Permission Service Tests', () {
       permission_test.main();
-    });
-
-    group('Video Recorder Proof Service Tests', () {
-      proof_test.main();
     });
 
     group('Video Recorder Widget Tests', () {

@@ -123,7 +123,6 @@ class VideoPublishService {
       // Clean up temporary provider data
       ref.read(videoRecorderProvider.notifier).reset();
       ref.read(videoEditorProvider.notifier).reset();
-      ref.read(videoPublishProvider.notifier).reset();
       ref.read(clipManagerProvider.notifier).clearAll();
       ref.read(selectedSoundProvider.notifier).clear();
 

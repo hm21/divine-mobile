@@ -12,7 +12,6 @@ import 'package:openvine/models/saved_clip.dart';
 import 'package:openvine/models/vine_draft.dart';
 import 'package:openvine/providers/app_providers.dart';
 import 'package:openvine/providers/video_editor_provider.dart';
-import 'package:openvine/providers/video_publish_provider.dart';
 import 'package:openvine/screens/clip_library_screen.dart';
 import 'package:openvine/services/draft_storage_service.dart';
 import 'package:openvine/theme/vine_theme.dart';
@@ -122,6 +121,32 @@ class ClipManagerNotifier extends Notifier<ClipManagerState> {
     );
 
     return clip;
+  }
+
+  /// Add multiple clips at once (e.g., from draft restoration).
+  ///
+  /// Appends all clips to the end of the current clip list and updates state.
+  /// Used when restoring drafts or importing multiple clips from library.
+  void addMultipleClips(List<RecordingClip> clips) {
+    if (clips.isEmpty) {
+      Log.debug(
+        '📎 No clips to add - empty list provided',
+        name: 'ClipManagerNotifier',
+        category: .video,
+      );
+      return;
+    }
+
+    final previousCount = _clips.length;
+    _clips.addAll(clips);
+
+    Log.info(
+      '📎 Added ${clips.length} clips (${previousCount} → ${_clips.length} total)',
+      name: 'ClipManagerNotifier',
+      category: .video,
+    );
+
+    state = state.copyWith(clips: List.unmodifiable(_clips));
   }
 
   /// Delete a clip by ID.
@@ -354,7 +379,7 @@ class ClipManagerNotifier extends Notifier<ClipManagerState> {
       final draftService = DraftStorageService(prefs);
       await draftService.saveDraft(draft);
 
-      ref.read(videoPublishProvider.notifier).setDraftId(draft.id);
+      ref.read(videoEditorProvider.notifier).setDraftId(draft.id);
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

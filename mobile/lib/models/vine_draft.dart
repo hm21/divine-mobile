@@ -117,9 +117,9 @@ class VineDraft {
   final DateTime lastModified;
   final Duration? expireTime;
   final PublishStatus publishStatus;
+  final String? proofManifestJson;
   final String? publishError;
   final int publishAttempts;
-  final String? proofManifestJson;
   final bool allowAudioReuse;
 
   /// Check if this draft has ProofMode data
