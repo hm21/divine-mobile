@@ -40,6 +40,7 @@ class CameraMobileService extends CameraService {
     // in buildPreviewWidget() when the widget is built. Zoom limits are loaded
     // asynchronously after the camera starts.
     _isInitialized = true;
+    onUpdateState(forceCameraRebuild: true);
   }
 
   @override
@@ -354,12 +355,12 @@ class CameraMobileService extends CameraService {
     required void Function(TapDownDetails details, BoxConstraints constraints)
     onTapDown,
   }) {
-    if (!_isInitialized) return const SizedBox.shrink();
+    if (!_isInitialized) return Container(color: const Color(0xFF141414));
 
     return CameraAwesomeBuilder.custom(
       saveConfig: SaveConfig.video(),
       progressIndicator: Container(color: const Color(0xFF141414)),
-      loadingWidget: const SizedBox.shrink(),
+      loadingWidget: Container(color: const Color(0xFF141414)),
       builder: (state, preview) {
         // The builder callback is called multiple times during rebuilds.
         // We only want to load zoom limits once when the camera is first ready,
