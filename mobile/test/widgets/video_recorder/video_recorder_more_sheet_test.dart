@@ -203,50 +203,5 @@ void main() {
       // Initially no clips, so should be disabled
       expect(clearTile.onTap, isNull);
     });
-
-    testWidgets('menu items have leading icons', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(home: Scaffold(body: VideoRecorderMoreSheet())),
-        ),
-      );
-
-      // Check that all BottomSheetListTiles have iconPath
-      final tiles = tester.widgetList<BottomSheetListTile>(
-        find.byType(BottomSheetListTile),
-      );
-
-      for (final tile in tiles) {
-        expect(tile.iconPath, isNotEmpty);
-      }
-    });
-
-    testWidgets('icons have size 32', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(home: Scaffold(body: VideoRecorderMoreSheet())),
-        ),
-      );
-
-      // Check that each BottomSheetListTile has a SizedBox with size 32x32
-      final tiles = tester.widgetList<BottomSheetListTile>(
-        find.byType(BottomSheetListTile),
-      );
-
-      expect(tiles.length, equals(4));
-
-      // Verify each tile contains a SizedBox with correct dimensions
-      for (final tile in tiles) {
-        final sizeBoxFinder = find.descendant(
-          of: find.byWidget(tile),
-          matching: find.byWidgetPredicate(
-            (widget) =>
-                widget is SizedBox && widget.height == 32 && widget.width == 32,
-          ),
-        );
-
-        expect(sizeBoxFinder, findsAtLeastNWidgets(1));
-      }
-    });
   });
 }

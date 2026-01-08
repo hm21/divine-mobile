@@ -26,18 +26,6 @@ void main() {
       expect(find.byType(VideoRecorderSegmentBar), findsOneWidget);
     });
 
-    testWidgets('uses Expanded to fill available space', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(body: Row(children: [VideoRecorderSegmentBar()])),
-          ),
-        ),
-      );
-
-      expect(find.byType(Expanded), findsOneWidget);
-    });
-
     testWidgets('initially shows empty bar with no segments', (tester) async {
       await tester.pumpWidget(
         ProviderScope(

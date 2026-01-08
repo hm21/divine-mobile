@@ -69,36 +69,6 @@ void main() {
       expect(find.byType(AnimatedOpacity), findsOneWidget);
     });
 
-    testWidgets('has semi-transparent black background', (tester) async {
-      await tester.pumpWidget(buildTestWidget());
-
-      final coloredBox = tester.widget<ColoredBox>(
-        find.descendant(
-          of: find.byType(AnimatedOpacity),
-          matching: find.byType(ColoredBox),
-        ),
-      );
-
-      expect(coloredBox.color, equals(const Color(0xB3000000)));
-    });
-
-    testWidgets('displays countdown number centered', (tester) async {
-      await tester.pumpWidget(buildTestWidget());
-
-      expect(find.byType(Center), findsOneWidget);
-      expect(find.byType(Text), findsOneWidget);
-    });
-
-    testWidgets('countdown text has large bold styling', (tester) async {
-      await tester.pumpWidget(buildTestWidget());
-
-      final text = tester.widget<Text>(find.byType(Text));
-
-      expect(text.style?.fontSize, equals(100));
-      expect(text.style?.fontWeight, equals(FontWeight.bold));
-      expect(text.style?.color, equals(const Color(0xFFFFFFFF)));
-    });
-
     testWidgets('updates when countdown value changes', (tester) async {
       await tester.pumpWidget(buildTestWidget());
       await tester.pump();

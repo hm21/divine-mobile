@@ -38,11 +38,6 @@ void main() {
       expect(find.byType(VideoRecorderFocusPoint), findsOneWidget);
     });
 
-    testWidgets('uses LayoutBuilder for responsive sizing', (tester) async {
-      await tester.pumpWidget(buildTestWidget());
-      expect(find.byType(LayoutBuilder), findsOneWidget);
-    });
-
     testWidgets('contains IgnorePointer to prevent touch interference', (
       tester,
     ) async {

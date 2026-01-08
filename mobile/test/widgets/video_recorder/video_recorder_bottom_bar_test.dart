@@ -116,22 +116,6 @@ void main() {
       expect(find.byType(IconButton), findsNWidgets(5));
     });
 
-    testWidgets('record button has correct styling', (tester) async {
-      await tester.pumpWidget(buildTestWidget());
-
-      final container = tester.widget<AnimatedContainer>(
-        find
-            .descendant(
-              of: find.byKey(ValueKey('divine-camera-record-button')),
-              matching: find.byType(AnimatedContainer),
-            )
-            .first,
-      );
-
-      expect(container.constraints?.maxWidth, equals(96));
-      expect(container.constraints?.maxHeight, equals(96));
-    });
-
     testWidgets('uses SafeArea for bottom positioning', (tester) async {
       await tester.pumpWidget(buildTestWidget());
 

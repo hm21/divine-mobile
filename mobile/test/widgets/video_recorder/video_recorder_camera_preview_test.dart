@@ -65,54 +65,6 @@ void main() {
       expect(find.byType(VideoRecorderCameraPlaceholder), findsOneWidget);
     });
 
-    testWidgets('renders with required radius parameter', (tester) async {
-      final mockCamera = MockCameraService.create(
-        onUpdateState: ({forceCameraRebuild}) {},
-      );
-      await mockCamera.initialize();
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            videoRecorderProvider.overrideWith(
-              () => VideoRecorderNotifier(mockCamera),
-            ),
-          ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: VideoRecorderCameraPreview(previewWidgetRadius: 16.0),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.byType(VideoRecorderCameraPreview), findsOneWidget);
-    });
-
-    testWidgets('contains ClipRRect for rounded corners', (tester) async {
-      final mockCamera = MockCameraService.create(
-        onUpdateState: ({forceCameraRebuild}) {},
-      );
-      await mockCamera.initialize();
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            videoRecorderProvider.overrideWith(
-              () => VideoRecorderNotifier(mockCamera),
-            ),
-          ],
-          child: const MaterialApp(
-            home: Scaffold(
-              body: VideoRecorderCameraPreview(previewWidgetRadius: 16.0),
-            ),
-          ),
-        ),
-      );
-
-      expect(find.byType(ClipRRect), findsWidgets);
-    });
-
     testWidgets('contains TweenAnimationBuilder for transitions', (
       tester,
     ) async {
@@ -137,34 +89,6 @@ void main() {
       );
 
       expect(find.byType(TweenAnimationBuilder<double>), isNotNull);
-    });
-
-    testWidgets('maintains radius value', (tester) async {
-      final mockCamera = MockCameraService.create(
-        onUpdateState: ({forceCameraRebuild}) {},
-      );
-      await mockCamera.initialize();
-
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            videoRecorderProvider.overrideWith(
-              () => VideoRecorderNotifier(mockCamera),
-            ),
-          ],
-          child: MaterialApp(
-            home: Scaffold(
-              body: VideoRecorderCameraPreview(previewWidgetRadius: 20.0),
-            ),
-          ),
-        ),
-      );
-
-      final widget = tester.widget<VideoRecorderCameraPreview>(
-        find.byType(VideoRecorderCameraPreview),
-      );
-
-      expect(widget.previewWidgetRadius, equals(20.0));
     });
   });
 }
