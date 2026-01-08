@@ -4,7 +4,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:openvine/utils/unified_logger.dart';
-import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:pro_video_editor/pro_video_editor.dart';
 
 /// Service for managing thumbnail and keyframe generation and caching
@@ -18,22 +17,16 @@ class VideoEditorThumbnailService {
   final int thumbnailCount;
 
   final _proVideoEditor = ProVideoEditor.instance;
-  final Map<String, Uint8List> cachedKeyFrames = {};
-  final Map<String, List<Uint8List>> cachedKeyFrameList = {};
 
   /// Get or generate a single keyframe for a video clip
-  Future<Uint8List> getKeyFrame(VideoClip source) async {
-    if (cachedKeyFrames.containsKey(source.id)) {
-      return cachedKeyFrames[source.id]!;
-    }
-
+  Future<Uint8List> getKeyFrame(EditorVideo video) async {
     final result = await _proVideoEditor.getKeyFrames(
       KeyFramesConfigs(
         video: EditorVideo.autoSource(
-          assetPath: source.clip.assetPath,
-          byteArray: source.clip.bytes,
-          file: source.clip.file,
-          networkUrl: source.clip.networkUrl,
+          assetPath: video.assetPath,
+          byteArray: video.byteArray,
+          file: video.file,
+          networkUrl: video.networkUrl,
         ),
         outputSize: const Size.square(200),
         boxFit: ThumbnailBoxFit.cover,
@@ -41,23 +34,18 @@ class VideoEditorThumbnailService {
         outputFormat: ThumbnailFormat.jpeg,
       ),
     );
-    cachedKeyFrames[source.id] = result.first;
     return result.first;
   }
 
   /// Get or generate multiple keyframes for a video clip
-  Future<List<Uint8List>> getKeyFrames(VideoClip source) async {
-    if (cachedKeyFrameList.containsKey(source.id)) {
-      return cachedKeyFrameList[source.id]!;
-    }
-
+  Future<List<Uint8List>> getKeyFrames(EditorVideo video) async {
     final result = await _proVideoEditor.getKeyFrames(
       KeyFramesConfigs(
         video: EditorVideo.autoSource(
-          assetPath: source.clip.assetPath,
-          byteArray: source.clip.bytes,
-          file: source.clip.file,
-          networkUrl: source.clip.networkUrl,
+          assetPath: video.assetPath,
+          byteArray: video.byteArray,
+          file: video.file,
+          networkUrl: video.networkUrl,
         ),
         outputSize: const Size.square(200),
         boxFit: ThumbnailBoxFit.cover,
@@ -65,7 +53,6 @@ class VideoEditorThumbnailService {
         outputFormat: ThumbnailFormat.jpeg,
       ),
     );
-    cachedKeyFrameList[source.id] = result;
     return result;
   }
 
@@ -142,11 +129,5 @@ class VideoEditorThumbnailService {
     );
 
     return temporaryThumbnails;
-  }
-
-  /// Clear all cached keyframes and thumbnails
-  void clearCache() {
-    cachedKeyFrames.clear();
-    cachedKeyFrameList.clear();
   }
 }

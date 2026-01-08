@@ -1,4 +1,4 @@
-// ABOUTME: Tests for VideoExportService ensuring correct FFmpeg command building
+// ABOUTME: Tests for VideoExportService ensuring correct video export functionality
 // ABOUTME: Verifies export pipeline, concatenation, audio mixing, and error handling
 
 import 'package:flutter_test/flutter_test.dart';
@@ -35,8 +35,8 @@ void main() {
 
     group('audio preservation', () {
       test('concatenateSegments accepts multiple clips with audio', () async {
-        // The implementation includes setpts=PTS-STARTPTS to normalize video timestamps
-        // This is critical for smooth concatenation without drift
+        // The implementation uses ProVideoEditor native rendering
+        // This ensures smooth concatenation without drift
         final clips = [
           RecordingClip(
             id: 'clip1',
@@ -54,11 +54,13 @@ void main() {
           ),
         ];
 
-        // Verify method returns a future - actual FFmpeg execution requires real files
+        // Verify method returns a future - actual native video processing
+        // requires real files
         final result = service.concatenateSegments(clips);
         expect(result, isA<Future<String>>());
 
-        // Wait for the future to complete (will fail due to missing plugin, but prevents test leaking)
+        // Wait for the future to complete (will fail due to missing plugin,
+        // but prevents test leaking)
         await expectLater(result, throwsA(isA<Exception>()));
       });
 
@@ -73,11 +75,13 @@ void main() {
           ),
         ];
 
-        // Test muteAudio parameter - even single clip goes through FFmpeg when muteAudio=true
+        // Test muteAudio parameter - even single clip goes through native
+        // processing when muteAudio=true
         final result = service.concatenateSegments(clips, muteAudio: true);
         expect(result, isA<Future<String>>());
 
-        // Wait for the future to complete (will fail due to missing plugin, but prevents test leaking)
+        // Wait for the future to complete (will fail due to missing plugin,
+        // but prevents test leaking)
         await expectLater(result, throwsA(isA<Exception>()));
       });
 
@@ -85,7 +89,8 @@ void main() {
         // Clips are processed in the order they appear in the list
         // The list position now determines the concatenation order
 
-        // Create clips in different order (order is now determined by list position)
+        // Create clips in different order (order is now determined by list
+        // position)
         final clips = [
           RecordingClip(
             id: 'clip2',
@@ -107,7 +112,8 @@ void main() {
         final result = service.concatenateSegments(clips);
         expect(result, isA<Future<String>>());
 
-        // Wait for the future to complete (will fail due to missing plugin, but prevents test leaking)
+        // Wait for the future to complete (will fail due to missing plugin,
+        // but prevents test leaking)
         await expectLater(result, throwsA(isA<Exception>()));
       });
     });

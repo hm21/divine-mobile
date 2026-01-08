@@ -41,6 +41,7 @@ import 'package:openvine/screens/video_detail_screen.dart';
 import 'package:openvine/screens/video_editor_screen.dart';
 import 'package:openvine/screens/fullscreen_video_feed_screen.dart';
 import 'package:openvine/screens/other_profile_screen.dart';
+import 'package:openvine/screens/video_publish_screen.dart';
 import 'package:openvine/screens/video_recorder_screen.dart';
 import 'package:openvine/screens/welcome_screen.dart';
 import 'package:openvine/services/auth_service.dart';
@@ -762,6 +763,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
             draftId: draftId == null || draftId.isEmpty ? null : draftId,
           );
         },
+      ),
+      GoRoute(
+        path: '/video-publish',
+        name: 'video-publish',
+        builder: (_, _) => const VideoPublishScreen(),
       ),
       // Fullscreen video feed route (no bottom nav, used from profile/hashtag grids)
       GoRoute(
