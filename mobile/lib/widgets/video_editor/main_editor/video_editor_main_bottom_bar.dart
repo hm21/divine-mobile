@@ -56,13 +56,6 @@ class VideoEditorMainBottomBar extends StatelessWidget {
                     iconPath: 'assets/icon/tune.svg',
                     onTap: () => scope.editor?.openFilterEditor(),
                   ),
-                  _ActionButton(
-                    // TODO(l10n): Replace with context.l10n when localization is added.
-                    label: 'Music',
-                    iconPath: 'assets/icon/music.svg',
-                    // TODO(@hm21): Implement music editor
-                    onTap: () {},
-                  ),
                 ],
               ),
             ),
